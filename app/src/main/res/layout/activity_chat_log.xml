@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.ChatLogActivity">
+
+    <EditText
+        android:id="@+id/edit_text_chat_log"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:ems="10"
+        android:hint="@string/type_message_hint"
+        android:inputType="textMultiLine"
+        android:maxHeight="100dp"
+        android:overScrollMode="always"
+        android:paddingLeft="10dp"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical"
+        android:singleLine="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/send_image_view_chat_log"
+        app:layout_constraintStart_toEndOf="@+id/deselect_image_image_view_chat_log" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_chat_log"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/purple_gray"
+        app:layout_constraintBottom_toTopOf="@+id/edit_text_chat_log"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/open_gallery_image_view_chat_log"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_chat_log"
+        app:srcCompat="@drawable/gallery_icon" />
+
+    <ImageView
+        android:id="@+id/send_image_view_chat_log"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_chat_log"
+        app:srcCompat="@drawable/send_button" />
+
+    <ImageView
+        android:id="@+id/deselect_image_image_view_chat_log"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/open_gallery_image_view_chat_log"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_chat_log"
+        app:srcCompat="@drawable/deselect_icon" />
+</androidx.constraintlayout.widget.ConstraintLayout>

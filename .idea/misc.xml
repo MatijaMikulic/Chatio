@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3435185185185185" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/drawable/email_icon_drawable.xml" value="0.3435185185185185" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3435185185185185" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/drawable/oval_frame.xml" value="0.25" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/drawable/password_icon_drawable.xml" value="0.3435185185185185" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/drawable/rounded_corners_button.xml" value="0.3435185185185185" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/drawable/rounded_corners_edittext.xml" value="0.3435185185185185" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/drawable/rounded_corners_green.xml" value="0.382051282051282" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/drawable/rounded_corners_smaller_button.xml" value="0.382051282051282" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/drawable/rounded_corners_textview.xml" value="0.382051282051282" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/drawable/rounded_corners_textview_profile.xml" value="0.382051282051282" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/drawable/rounded_corners_white.xml" value="0.3880208333333333" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/drawable/search_icon_drawable.xml" value="0.382051282051282" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/drawable/startup_screen.xml" value="0.22604166666666667" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/drawable/username_icon_drawable.xml" value="0.3435185185185185" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/activity_chat_log.xml" value="0.25" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/activity_edit_profile.xml" value="0.25" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/activity_home.xml" value="0.24433249370277077" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/activity_image_viewer.xml" value="0.2125" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/activity_login.xml" value="0.37135416666666665" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/activity_register.xml" value="0.37135416666666665" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/activity_splash.xml" value="0.37135416666666665" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/fragment_latest_messages.xml" value="0.371875" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/fragment_new_message.xml" value="0.33" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/fragment_profile.xml" value="0.371875" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/image_from.xml" value="0.371875" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/image_to.xml" value="0.371875" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/loading_item.xml" value="0.18" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/message_from.xml" value="0.33" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/message_to.xml" value="0.25" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/picture_to.xml" value="0.371875" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/user_item_latest_messages.xml" value="0.371875" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/user_item_layout.xml" value="0.5" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/layout/user_item_new_message.xml" value="0.371875" />
+        <entry key="..\:/Users/Matija/AndroidStudioProjects/Chatio/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36770833333333336" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

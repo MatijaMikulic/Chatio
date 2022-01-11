@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "758533363595",
+    "firebase_url": "https://chatio-3e74b-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "chatio-3e74b",
+    "storage_bucket": "chatio-3e74b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758533363595:android:d3a548632958f46f77018e",
+        "android_client_info": {
+          "package_name": "com.ferit.matijam.chatio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "758533363595-jvugan1o2bvg6t2qki847vkegk79g46p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEj6XX5S20dGOvzZLdTqdm-mYUwW2bZfA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "758533363595-jvugan1o2bvg6t2qki847vkegk79g46p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
