@@ -12,11 +12,8 @@ import com.google.firebase.database.FirebaseDatabase
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //  setContentView(R.layout.activity_splash) // this was removed because I had to solve white screen issue on app launch
 
         supportActionBar?.hide()
-
-    //    FirebaseDatabase.getInstance("https://chatio-3e74b-default-rtdb.europe-west1.firebasedatabase.app").setPersistenceEnabled(true)
 
         Handler(Looper.getMainLooper()).postDelayed({
             val intent = Intent(this, LoginActivity::class.java)

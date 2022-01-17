@@ -106,12 +106,6 @@ class LoginActivity : AppCompatActivity() {
         return flag
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-
-        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out)
-
-    }
     override fun onStart() {
         super.onStart()
 

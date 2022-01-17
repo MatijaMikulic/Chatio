@@ -14,9 +14,8 @@ class UserNewItem(val user: User): Item<GroupieViewHolder>()
 
         viewHolder.itemView.findViewById<TextView>(R.id.user_item_username_newmessage).text=user.username
         val imageViewHolder=viewHolder.itemView.findViewById<CircleImageView>(R.id.user_item_image_newmessage)
-     //   Picasso.get().load(user.image).resize(50,50).into(imageViewHolder)
-        Glide.with(viewHolder.root.context).load(user.imageUrl).into(imageViewHolder)
 
+        Glide.with(viewHolder.root.context).load(user.imageUrl).into(imageViewHolder)
 
     }
 

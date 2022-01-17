@@ -152,10 +152,4 @@ class RegisterActivity : AppCompatActivity() {
         }
         return flag
     }
-
-   override fun onBackPressed() { //animation
-        super.onBackPressed()
-
-        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out)
-    }
 }

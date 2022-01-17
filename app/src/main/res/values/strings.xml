@@ -26,9 +26,14 @@
 
     <string name="dummy_text">This is my message</string>
 
-    <string name="progress_bar_message">Loading...Please wait</string>
+    <string name="progress_bar_message">Loading…Please wait</string>
 
-    <string name="type_message_hint">Type message...</string>
+    <string name="type_message_hint">Type message…</string>
 
+    <string name="edit_username">Change username</string>
+    <string name="datetime">15.03.2000.  18:00</string>
+    <string name="time">18:00</string>
+    <string name="dismiss_button">Dismiss</string>
+    <string name="confirm_button">Confirm</string>
 
 </resources>

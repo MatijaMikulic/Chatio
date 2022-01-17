@@ -1,6 +1,5 @@
 package com.ferit.matijam.chatio.models
 
-import java.sql.Timestamp
 
 data class ChatMessage(
     var id:String?=null,
@@ -8,8 +7,10 @@ data class ChatMessage(
     var imageUrl:String?=null,
     var fromUserId: String?,
     var toUserId:String?=null,
-    var timestamp: Long?=null
+    var timestamp: Long?=null,
+    val localTime:String?=null
 
 ){
-    constructor():this("","","","","",-1)
+    constructor():this("","","","","",-1, "")
+
 }

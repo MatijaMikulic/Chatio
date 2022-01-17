@@ -16,6 +16,7 @@ import com.ferit.matijam.chatio.R
 import com.ferit.matijam.chatio.activities.ChatLogActivity
 import com.ferit.matijam.chatio.items.UserNewItem
 import com.ferit.matijam.chatio.models.User
+import com.ferit.matijam.chatio.utils.DatabaseOfflineSupport
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -40,7 +41,6 @@ class NewMessageFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_new_message, container, false)
 
         recyclerView=view.findViewById(R.id.recycler_view_new_message)
@@ -54,6 +54,7 @@ class NewMessageFragment : Fragment() {
             val intent= Intent(view.context,ChatLogActivity::class.java)
             intent.putExtra(USER_KEY, userItemNew.user)
             startActivity(intent)
+            activity?.overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
         }
 
         searchEditText.addTextChangedListener(object :TextWatcher{
@@ -65,7 +66,6 @@ class NewMessageFragment : Fragment() {
                     searchUsers(s.toString().lowercase())
                 }
                 else{
-                  //  retrieveUsers()
                     userAdapter.clear()
                 }
             }
@@ -77,8 +77,9 @@ class NewMessageFragment : Fragment() {
     }
     private fun searchUsers(input: String) {
         val currentUserId=FirebaseAuth.getInstance().currentUser!!.uid
-        val query=FirebaseDatabase.getInstance("https://chatio-3e74b-default-rtdb.europe-west1.firebasedatabase.app").getReference("/users").orderByChild("queryUsername").startAt(input).endAt(input+"\uf0ff")
-        query.addValueEventListener(object:ValueEventListener{
+        val query= DatabaseOfflineSupport.getDatabase()
+            ?.getReference("/users")?.orderByChild("queryUsername")?.startAt(input)?.endAt(input+"\uf0ff")
+        query?.addValueEventListener(object:ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 userAdapter.clear()
                 snapshot.children.forEach {
@@ -92,6 +93,7 @@ class NewMessageFragment : Fragment() {
                 }
             }
             override fun onCancelled(error: DatabaseError) {
+                Log.d(TAG, error.message)
             }
         })
     }

@@ -39,6 +39,7 @@ class HomeActivity : AppCompatActivity() {
 
         moveToFragment(LatestMessagesFragment())
         supportActionBar?.title="Latest Messages"
+        
 
         navigationView.setOnItemSelectedListener{
             when(it.itemId)

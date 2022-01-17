@@ -9,6 +9,7 @@ class LoadingDialog(private val activity: Activity,private val text:String) {
 
     private lateinit var dialog: AlertDialog
     private lateinit var loadingText:TextView
+
     fun startLoading()
     {
         val inflater=activity.layoutInflater

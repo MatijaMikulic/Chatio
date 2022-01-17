@@ -1,6 +1,5 @@
 package com.ferit.matijam.chatio.activities
 
-import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,7 +7,6 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.canhub.cropper.CropImageContract
@@ -30,12 +28,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import java.text.SimpleDateFormat
 import java.util.*
 
 class ChatLogActivity : AppCompatActivity() {
@@ -66,6 +64,7 @@ class ChatLogActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chat_log)
 
         toUser=intent.getParcelableExtra<User>(NewMessageFragment.USER_KEY)
+
         supportActionBar?.title=toUser?.username
 
         deselectImageView=findViewById(R.id.deselect_image_image_view_chat_log)
@@ -86,9 +85,10 @@ class ChatLogActivity : AppCompatActivity() {
         }
         deselectImageView.setOnClickListener {
             imageUri=null
+            deselectImageView.visibility=View.GONE
         }
 
-        listenForTextMessages()
+        listenForMessages()
 
         sendMessageImageView.setOnClickListener {
 
@@ -116,14 +116,13 @@ class ChatLogActivity : AppCompatActivity() {
 
     private fun sendImageMessage() {
         val currentUserId=FirebaseAuth.getInstance().currentUser?.uid
-        val toUserId=toUser?.uid
 
         if(currentUserId==null)return
         val storageChatPicturesReference= FirebaseStorage.getInstance().getReference("Chat Pictures")
         val filename= UUID.randomUUID().toString()
         val fileRef=storageChatPicturesReference.child(filename)
 
-        var uploadTask:StorageTask<*>
+        val uploadTask:StorageTask<*>
         uploadTask=fileRef.putFile(imageUri!!)
 
         uploadTask.continueWithTask(Continuation <UploadTask.TaskSnapshot, Task<Uri>>{
@@ -140,90 +139,45 @@ class ChatLogActivity : AppCompatActivity() {
                 val downloadUri=task.result
                 val imageUrl=downloadUri.toString()
 
-                val databaseRef = DatabaseOfflineSupport.getDatabase()
-                    ?.getReference("/user_messages/$currentUserId/$toUserId")?.push()
-
-                val databaseToRef =DatabaseOfflineSupport.getDatabase()
-                    ?.getReference("/user_messages/$toUserId/$currentUserId")?.push()
-
-                val currentTimeMillis=System.currentTimeMillis()/1000
-                val chatMessage=ChatMessage(databaseRef?.key!!,"",imageUrl,currentUserId,toUserId,currentTimeMillis)
-
-                databaseRef?.setValue(chatMessage)
-                    ?.addOnCompleteListener {
-                    Log.d(TAG,"Saved picture")
-                    imageUri=null
-                    deselectImageView.visibility=View.GONE
-                    recyclerView.scrollToPosition(chatAdapter.itemCount-1)
-                }
-                databaseToRef?.setValue(chatMessage)
-                    ?.addOnCanceledListener {
-                        Log.d(TAG,"Saved picture")
-                    }
-                val chatTextMessage=ChatMessage(databaseRef?.key!!,"Sent image",imageUrl,currentUserId,toUserId, currentTimeMillis)
-
-                val latestMessageRef=DatabaseOfflineSupport.getDatabase()
-                    ?.getReference("/latest_messages/$currentUserId/$toUserId")
-                latestMessageRef?.setValue(chatTextMessage)
-
-                val latestMessageToRef=DatabaseOfflineSupport.getDatabase()
-                    ?.getReference("/latest_messages/$toUserId/$currentUserId")
-                latestMessageToRef?.setValue(chatTextMessage)
+                saveImageToFirebaseDatabase(imageUrl)
             }
         })
-
-
     }
 
-    private fun listenForTextMessages() {
-        val toUserId=toUser?.uid
+    private fun saveImageToFirebaseDatabase(imageUrl: String) {
         val currentUserId=FirebaseAuth.getInstance().currentUser?.uid
+        val toUserId=toUser?.uid
+        val databaseRef = DatabaseOfflineSupport.getDatabase()
+            ?.getReference("/user_messages/$currentUserId/$toUserId")?.push()
 
-        val ref=DatabaseOfflineSupport.getDatabase()
-            ?.getReference("/user_messages/$currentUserId/$toUserId")
-        ref?.keepSynced(true)
-        ref?.addChildEventListener(object :ChildEventListener{
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                val chatMessage=snapshot.getValue(ChatMessage::class.java)
+        val databaseToRef =DatabaseOfflineSupport.getDatabase()
+            ?.getReference("/user_messages/$toUserId/$currentUserId")?.push()
 
-                if(chatMessage!=null){
-                    if(chatMessage.fromUserId==FirebaseAuth.getInstance().currentUser?.uid)
-                    {
-                        val currentUser=HomeActivity.currentUser?:return
-                        if(chatMessage.imageUrl=="")
-                        {
-                        chatAdapter.add(MessageFromItem(chatMessage.text,currentUser))
-                        }else if(chatMessage.text==""){
-                            chatAdapter.add(ImageMessageFromItem(chatMessage.imageUrl,currentUser,this@ChatLogActivity))
+        val time = SimpleDateFormat( "yyyy/MM/dd   HH:mm" ).format( Calendar.getInstance().time)
+        val currentTimeMillis=System.currentTimeMillis()/1000
+        val chatMessage=ChatMessage(databaseRef?.key!!,null,imageUrl,currentUserId,toUserId,currentTimeMillis,time)
 
-                        }else{
-                            chatAdapter.add(MessageToItem(chatMessage.text,toUser!!))
-                            chatAdapter.add(ImageMessageFromItem(chatMessage.imageUrl,toUser!!,this@ChatLogActivity))
-                        }
-                    }
-                    else{
-                        if(chatMessage.imageUrl=="")
-                        {
-                            chatAdapter.add(MessageToItem(chatMessage.text,toUser!!))
-                        }else if(chatMessage.text==""){
-                            chatAdapter.add(ImageMessageToItem(chatMessage.imageUrl,toUser!!,this@ChatLogActivity))
-                        }else{
-                            chatAdapter.add(MessageToItem(chatMessage.text,toUser!!))
-                            chatAdapter.add(ImageMessageToItem(chatMessage.imageUrl,toUser!!,this@ChatLogActivity))
-                        }
-                    }
-                }
-                recyclerView.scrollToPosition(chatAdapter.itemCount -1)
+        databaseRef?.setValue(chatMessage)
+            ?.addOnCompleteListener {
+                Log.d(TAG,"Saved picture")
+                imageUri=null
+                deselectImageView.visibility=View.GONE
+                recyclerView.scrollToPosition(chatAdapter.itemCount-1)
             }
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+        databaseToRef?.setValue(chatMessage)
+            ?.addOnCanceledListener {
+                Log.d(TAG,"Saved picture")
             }
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-            }
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-            }
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
+        val chatTextMessage=ChatMessage(databaseRef?.key!!,"Sent image",imageUrl,
+            currentUserId,toUserId, currentTimeMillis, time)
+
+        val latestMessageRef=DatabaseOfflineSupport.getDatabase()
+            ?.getReference("/latest_messages/$currentUserId/$toUserId")
+        latestMessageRef?.setValue(chatTextMessage)
+
+        val latestMessageToRef=DatabaseOfflineSupport.getDatabase()
+            ?.getReference("/latest_messages/$toUserId/$currentUserId")
+        latestMessageToRef?.setValue(chatTextMessage)
 
     }
     private fun sendTextMessage()
@@ -241,7 +195,9 @@ class ChatLogActivity : AppCompatActivity() {
         val toRef=DatabaseOfflineSupport.getDatabase()
             ?.getReference("/user_messages/$toUserId/$currentUserId")?.push()
 
-        val chatTextMessage=ChatMessage(ref?.key!!,text,"",currentUserId,toUserId,System.currentTimeMillis()/1000)
+        val time = SimpleDateFormat( "yyyy/MM/dd   HH:mm" ).format( Calendar.getInstance().time)
+        val chatTextMessage=ChatMessage(ref?.key!!,text,null,currentUserId,toUserId,
+            System.currentTimeMillis()/1000, time)
         ref.setValue(chatTextMessage)
             .addOnCompleteListener {
                 Log.d(TAG,"Saved message")
@@ -261,5 +217,66 @@ class ChatLogActivity : AppCompatActivity() {
             ?.getReference("/latest_messages/$toUserId/$currentUserId")
         latestMessageToRef?.setValue(chatTextMessage)
     }
+
+    private fun listenForMessages() {
+        val toUserId=toUser?.uid
+        val currentUserId=FirebaseAuth.getInstance().currentUser?.uid
+
+        val ref=DatabaseOfflineSupport.getDatabase()
+            ?.getReference("/user_messages/$currentUserId/$toUserId")
+        ref?.addChildEventListener(object :ChildEventListener{
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val chatMessage=snapshot.getValue(ChatMessage::class.java)
+
+                if(chatMessage!=null){
+                    if(chatMessage.fromUserId==FirebaseAuth.getInstance().currentUser?.uid)
+                    {
+                        showMessageFromItem(chatMessage)
+                    }
+                    else{
+                        showMessageToItem(chatMessage)
+                    }
+                }
+                recyclerView.scrollToPosition(chatAdapter.itemCount -1)
+            }
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+            }
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+            }
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.d(TAG,error.message)
+            }
+        })
+    }
+
+    private fun showMessageToItem(chatMessage: ChatMessage) {
+        if(chatMessage.imageUrl=="")
+        {
+            chatAdapter.add(MessageToItem(chatMessage,toUser!!))
+        }else if(chatMessage.text==""){
+            chatAdapter.add(ImageMessageToItem(chatMessage,toUser!!,this@ChatLogActivity))
+        }else{
+            chatAdapter.add(MessageToItem(chatMessage,toUser!!))
+            chatAdapter.add(ImageMessageToItem(chatMessage,toUser!!,this@ChatLogActivity))
+        }
+    }
+
+    private fun showMessageFromItem(chatMessage: ChatMessage) {
+        val currentUser=HomeActivity.currentUser?:return
+        if(chatMessage.imageUrl=="")
+        {
+            chatAdapter.add(MessageFromItem(chatMessage,currentUser))
+        }else if(chatMessage.text==""){
+            chatAdapter.add(ImageMessageFromItem(chatMessage,currentUser,this@ChatLogActivity))
+
+        }else{
+            chatAdapter.add(MessageFromItem(chatMessage,toUser!!))
+            chatAdapter.add(ImageMessageFromItem(chatMessage,toUser!!,this@ChatLogActivity))
+        }
+    }
+
+
 }
 

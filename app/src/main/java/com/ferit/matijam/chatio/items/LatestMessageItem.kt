@@ -10,6 +10,7 @@ import com.ferit.matijam.chatio.R
 import com.ferit.matijam.chatio.fragments.LatestMessagesFragment
 import com.ferit.matijam.chatio.models.ChatMessage
 import com.ferit.matijam.chatio.models.User
+import com.ferit.matijam.chatio.utils.DatabaseOfflineSupport
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -30,9 +31,9 @@ class LatestMessageItem(val chatMessage: ChatMessage):Item<GroupieViewHolder>() 
         }else{
             chatPartnerId=chatMessage.fromUserId
         }
-        val ref=FirebaseDatabase.getInstance("https://chatio-3e74b-default-rtdb.europe-west1.firebasedatabase.app")
-            .getReference("/users/$chatPartnerId")
-        ref.addListenerForSingleValueEvent(object:ValueEventListener{
+        val ref= DatabaseOfflineSupport.getDatabase()
+            ?.getReference("/users/$chatPartnerId")
+        ref?.addListenerForSingleValueEvent(object:ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 chatPartner=snapshot.getValue(User::class.java)
                 val userProfileImage=viewHolder.itemView.findViewById<CircleImageView>(R.id.user_item_image_latestmessages)
@@ -48,7 +49,10 @@ class LatestMessageItem(val chatMessage: ChatMessage):Item<GroupieViewHolder>() 
             }
         })
         val latestMessageTextView=viewHolder.itemView.findViewById<TextView>(R.id.user_item_last_message_latestmessages)
+        val timeTextView=viewHolder.itemView.findViewById<TextView>(R.id.time_latestmessage)
         latestMessageTextView.text=chatMessage.text
+        timeTextView.text=chatMessage.localTime?.substring(startIndex =13)
+
 
     }
 

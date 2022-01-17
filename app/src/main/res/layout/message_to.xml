@@ -17,7 +17,6 @@
         android:src="@drawable/default_profile_image"
         app:civ_border_color="@color/white"
         app:civ_border_width="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,8 +30,18 @@
         android:padding="16dp"
         android:text="@string/dummy_text"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textIsSelectable="true"
         app:layout_constraintStart_toEndOf="@+id/user_image_message_to"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/time_message_to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/datetime"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/text_message_to"
+        app:layout_constraintStart_toStartOf="@+id/text_message_to"
+        app:layout_constraintTop_toBottomOf="@+id/text_message_to" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

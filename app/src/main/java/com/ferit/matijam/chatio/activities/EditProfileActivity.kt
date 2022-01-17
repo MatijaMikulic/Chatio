@@ -5,10 +5,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.bumptech.glide.Glide
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageView
@@ -18,22 +15,29 @@ import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.OnCompleteListener
 import com.ferit.matijam.chatio.models.User
 import com.ferit.matijam.chatio.utils.DatabaseOfflineSupport
-import com.ferit.matijam.chatio.utils.LoadingDialog
+import com.ferit.matijam.chatio.utils.DeleteAccountDialog
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import de.hdodenhof.circleimageview.CircleImageView
+import android.widget.TextView
+import com.google.firebase.auth.FirebaseUser
+
 
 class EditProfileActivity : AppCompatActivity() {
 
-
+    companion object{
+        const val TAG="EditProfileActivity"
+    }
     private lateinit var saveImageView:ImageView
     private lateinit var profileImage: CircleImageView
     private lateinit var editUsernameEditText: EditText
@@ -43,6 +47,7 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var changeImageTextView: TextView
     private var url=""
     private lateinit var closeImageView: ImageView
+    private lateinit var deleteButton: Button
 
     private val cropImage = registerForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
@@ -50,16 +55,14 @@ class EditProfileActivity : AppCompatActivity() {
             profileImage.setImageURI(imageUri)
         } else {
             val exception = result.error
-            Log.d("EditProfileActivity",exception.toString())
+            Log.d(TAG,exception.toString())
         }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
         supportActionBar?.hide()
-
 
         editUsernameEditText = findViewById(R.id.username_edit_text_edit_profile)
         profileImage = findViewById(R.id.user_image_edit_profile)
@@ -67,11 +70,13 @@ class EditProfileActivity : AppCompatActivity() {
         changeImageTextView=findViewById(R.id.change_image_text_view_edit_profile)
         storageProfilePictureReference=FirebaseStorage.getInstance().getReference("Profile Pictures")
         closeImageView=findViewById(R.id.close_image_view_edit_profile)
+        deleteButton=findViewById(R.id.delete_accout_button_edit_profile)
 
         closeImageView.setOnClickListener {
             val intent=Intent(this,HomeActivity::class.java)
             startActivity(intent)
             finish()
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
         }
 
         changeImageTextView.setOnClickListener {
@@ -85,6 +90,11 @@ class EditProfileActivity : AppCompatActivity() {
         saveImageView.setOnClickListener {
             updateUserInfo()
         }
+
+        deleteButton.setOnClickListener {
+            authenticate()
+        }
+
         setUserInfo()
 
     }
@@ -95,6 +105,60 @@ class EditProfileActivity : AppCompatActivity() {
                 setGuidelines(CropImageView.Guidelines.ON)
             }
         )
+    }
+
+    private fun  authenticate() {
+       val user = Firebase.auth.currentUser!!
+
+        val deleteDialog=DeleteAccountDialog(this)
+        deleteDialog.startLoading()
+
+
+        deleteDialog.dismissButton.setOnClickListener {
+            deleteDialog.dismiss()
+        }
+
+        deleteDialog.confirmButton.setOnClickListener {
+            val password=deleteDialog.getPasswordText()
+            val credentials = EmailAuthProvider.getCredential(user.email.toString(), password)
+
+            user.reauthenticate(credentials)
+                .addOnCompleteListener {
+                    deleteDialog.dismiss()
+                    Log.d("TAG", "User re-authenticated.")
+                    deleteAccount(user)
+                }
+                .addOnFailureListener{
+                    Toast.makeText(this,it.message.toString(),Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+    private fun deleteAccount(user: FirebaseUser) {
+        val currentUserId=FirebaseAuth.getInstance().currentUser?.uid ?:return
+        user.delete()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    deleteUserInfo(currentUserId)
+                    Log.d(TAG, "User account deleted.")
+                    val intent=Intent(this,HomeActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                }
+            }
+    }
+
+    private fun deleteUserInfo(currentUserId: String) {
+
+
+        val ref= DatabaseOfflineSupport.getDatabase()?.getReference("/users")
+        val userMap=HashMap<String,Any?>()
+        userMap["email"]=null
+        userMap["imageUrl"]="https://firebasestorage.googleapis.com/v0/b/chatio-3e74b.appspot.com/o/default%20images%2Fdefault_profile_image.png?alt=media&token=16af69c3-30f8-4da4-8deb-2f77f0502d97"
+        userMap["queryUsername"]=null
+        userMap["username"]="Deleted User"
+
+        ref?.child(currentUserId)?.updateChildren(userMap)
     }
 
     private fun updateUserInfo() {
@@ -110,8 +174,8 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun updateUserImageAndInfo() {
-        val currenUserId=FirebaseAuth.getInstance().currentUser!!.uid
-        val fileRef=storageProfilePictureReference!!.child(currenUserId)
+        val currentUserId=FirebaseAuth.getInstance().currentUser!!.uid
+        val fileRef=storageProfilePictureReference!!.child(currentUserId)
 
         val uploadTask:StorageTask<*>
         uploadTask=fileRef.putFile(imageUri!!)
@@ -132,14 +196,14 @@ class EditProfileActivity : AppCompatActivity() {
                 val ref= DatabaseOfflineSupport.getDatabase()?.getReference("/users")
                 val userMap=HashMap<String,Any>()
                 userMap["imageUrl"]=url
+                userMap["username"]=editUsernameEditText.text.toString()
+                userMap["username"]=editUsernameEditText.text.toString().lowercase()
 
-                ref?.child(currenUserId)?.updateChildren(userMap)
+                ref?.child(currentUserId)?.updateChildren(userMap)
                 val intent= Intent(this, HomeActivity::class.java)
                 startActivity(intent)
                 finish()
             }
-
-
         })
     }
 
@@ -154,6 +218,7 @@ class EditProfileActivity : AppCompatActivity() {
                     ?.getReference("/users/$currentUserId")
                 val userMap=HashMap<String,Any>()
                 userMap["username"]=editUsernameEditText.text.toString()
+                userMap["queryUsername"]=editUsernameEditText.text.toString().lowercase()
 
                 userRef?.updateChildren(userMap)
 
@@ -163,8 +228,6 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }
     }
-
-
 
     private fun setUserInfo() {
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
@@ -180,12 +243,10 @@ class EditProfileActivity : AppCompatActivity() {
                         .load(user?.imageUrl)
                         .into(profileImage)
                     editUsernameEditText.setText(user?.username)
-
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
-                Log.d("TAG", error.getMessage())
+                Log.d("TAG", error.message)
             }
         })
     }

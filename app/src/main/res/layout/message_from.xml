@@ -17,7 +17,6 @@
         app:civ_border_width="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/text_message_from"
         android:layout_width="wrap_content"
@@ -28,14 +27,16 @@
         android:padding="16dp"
         android:text="@string/dummy_text"
         android:textColor="@color/white"
+        android:textIsSelectable="true"
         app:layout_constraintEnd_toStartOf="@+id/user_image_message_from"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/time_message_from"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="18/12 15:43"
+        android:text="@string/datetime"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/text_message_from"
         app:layout_constraintStart_toStartOf="@+id/text_message_from"
         app:layout_constraintTop_toBottomOf="@+id/text_message_from" />
